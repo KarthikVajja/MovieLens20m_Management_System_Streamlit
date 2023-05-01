@@ -28,7 +28,7 @@ def read_data(c, conn):
           clean_df = pd.DataFrame(result, columns=['userid', 'movieid', 'tag', 'timestamp'])
           st.dataframe(clean_df)
      
-     tab1, tab2, tab3 = st.tabs(['Insert', 'Update', 'Delete'])
+     tab1, tab2, tab3, tab4 = st.tabs(['Insert', 'Update', 'Delete', 'Query'])
 
      with tab1:
         st.subheader('Insert Data')
@@ -68,3 +68,16 @@ def read_data(c, conn):
         if st.button("Delete"):
             delete_data(task1, c, conn)
             st.success("Deleted")
+
+     with tab4:
+         st.subheader('Query')
+         query = st.text_area('Query')
+         if st.button("Execute"):
+             with st.expander('View Table'):
+                c.execute(query)
+                if query.startswith('select'):
+                    data = c.fetchall()
+                else:
+                    data = view_all_data(c)
+                clean_df = pd.DataFrame(data, columns=['userid', 'movieid', 'tag', 'timestamp'])
+                st.dataframe(clean_df)
